@@ -150,6 +150,12 @@
 		display: none !important;
 	  }
 
+	@media (max-width: 600px) {
+	  #retroMode {
+		padding-bottom: 80px; /* adjust as needed */
+	  }
+	}
+	
 	  body {
 		overflow: auto; /* allow scrolling in retro */
 	  }
@@ -158,6 +164,15 @@
 	  max-height: 100vh;   /* limit to viewport height */
 	  overflow-y: auto;    /* scroll inside retro content */
 	  padding: 40px;
+	}
+	
+	#retroTitleWrap {
+	  display: flex;
+	  justify-content: center;  /* centers the <pre> block itself */
+	  margin-bottom: 30px;
+	}
+	#retroTitleRB {
+	  text-align: left;         /* keeps ASCII aligned properly */
 	}
 
 	}
