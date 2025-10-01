@@ -102,7 +102,6 @@
 	  font-family: "Courier New", monospace;
 	  text-align: center;
 	}
-	#retroMode { display: none; }
 
 	body.retro a {
 	  color: #00ff00;
@@ -131,28 +130,7 @@
 	  display: block;
 	  padding: 40px;
 	}
-	
-	@media (max-width: 600px) {
-	  .info-panel {
-		width: 90%;
-		padding: 20px;
-		font-size: 14px;
-	  }
-
-	  .name-tag {
-		font-size: 28px;
-		right: 20px;
-	  }
-
-	  #themeSwitch {
-		right: 20px;
-		bottom: 20px;
-		font-size: 12px;
-		padding: 6px 10px;
-	  }
-	}
-
-</style>
+  </style>
 </head>
 <body>
 <canvas id="bgCanvas"></canvas>
@@ -170,17 +148,16 @@
     <h2 id="panelTitle">Title</h2>
     <div id="panelContent"></div>
   </div>
-
 <div id="retroMode">
 <pre id="retroTitle">
 <pre id="retroTitle">
-RRRRRRRRR   OOOOOOOOOO   RRRRRRRRR    YYYYY   YYYY     BBBBBBBBBB    OOOOOOOOOO    WW           WW   EEEEEEEEEEE   LLLLL         LLLLL
+RRRRRRRRR   OOOOOOOOOO   RRRRRRRRR    YYYYY YYYYY      BBBBBBBBBB    OOOOOOOOOO    WW           WW   EEEEEEEEEEE   LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR    YYY   YYY       BBB     BBB  OOO      OOO   WW           WW   EE            LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR     YYY YYY        BBB     BBB  OOO      OOO   WW    WW     WW   EE            LLLLL         LLLLL
 RRRRRRRRR   OOO      OOO RRRRRRRR        YYYYY         BBBBBBBBBB   OOO      OOO   WW   WWWW    WW   EEEEEEEEE     LLLLL         LLLLL
 RRR  RRR    OOO      OOO RRR  RRR         YYY          BBB     BBB  OOO      OOO   WW  WW  WW   WW   EE            LLLLL         LLLLL
 RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO   WW WW    WW  WW   EE            LLLLL         LLLLL
-      RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
+RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
 </pre>
 
 
@@ -714,6 +691,7 @@ canvas.addEventListener('touchstart', e => {
     }
   }
 });
+
 function pointLineDistance(px, py, x1, y1, x2, y2) {
   const A = px - x1, B = py - y1, C = x2 - x1, D = y2 - y1;
   const dot = A * C + B * D;
@@ -765,20 +743,21 @@ window.onload = () => {
   drawHexagonBackground();
   render();
 
-  document.getElementById("themeSwitch").addEventListener("click", () => {
+  const themeBtn = document.getElementById("themeSwitch");
+
+  // Auto-enable retro mode on mobile
+  const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  if (isMobile) {
+    document.body.classList.add("retro");
+    // Optionally hide the toggle on mobile
+    if (themeBtn) themeBtn.style.display = "none";
+  }
+
+  // Desktop can still toggle manually
+  themeBtn?.addEventListener("click", () => {
     document.body.classList.toggle("retro");
   });
 };
-function applyMobileReadability() {
-  const isMobile = window.matchMedia('(max-width: 600px)').matches;
-  document.body.classList.toggle('retro', isMobile);
-  // Optional: update the button label so it makes sense for the current mode
-  const btn = document.getElementById('themeSwitch');
-  if (btn) btn.textContent = isMobile ? 'Switch to Laser Mode' : 'Toggle Readability Mode';
-}
-
-window.addEventListener('load', applyMobileReadability);
-window.addEventListener('resize', applyMobileReadability);
 </script>
 </body>
 </html>
