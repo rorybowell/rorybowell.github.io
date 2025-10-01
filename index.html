@@ -130,12 +130,30 @@
 	  display: block;
 	  padding: 40px;
 	}
+	/* hide close button normally */
+	.info-panel .close-btn {
+	  display: none;
+	}
+
+	/* show it on mobile */
+	@media (max-width: 600px) {
+	  .info-panel .close-btn {
+		display: flex; /* makes it appear */
+	  }
+	}
 	@media (max-width: 600px) {
 	  .info-panel {
 		width: 90%;
 		padding: 20px;
 		font-size: 14px;
 	  }
+	@media (max-width: 600px) {
+	  .name-tag {
+		top: 10px;
+		right: 10px;
+		font-size: 28px; /* shrink for mobile */
+	  }
+	}
 
 	  .name-tag {
 		font-size: 28px;
