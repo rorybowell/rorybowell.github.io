@@ -146,9 +146,10 @@
 	  }
 
 	  #retroMode {
-		display: block !important;
-		padding: 20px;
-	  }
+	  max-height: 100vh;   /* limit to viewport height */
+	  overflow-y: auto;    /* scroll inside retro content */
+	  padding: 40px;
+	}
 	}
 
   </style>
@@ -178,7 +179,7 @@ RRR    RRR  OOO      OOO RRR    RRR     YYY YYY        BBB     BBB  OOO      OOO
 RRRRRRRRR   OOO      OOO RRRRRRRR        YYYYY         BBBBBBBBBB   OOO      OOO   WW   WWWW    WW   EEEEEEEEE     LLLLL         LLLLL
 RRR  RRR    OOO      OOO RRR  RRR         YYY          BBB     BBB  OOO      OOO   WW  WW  WW   WW   EE            LLLLL         LLLLL
 RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO   WW WW    WW  WW   EE            LLLLL         LLLLL
-RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
+   RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
 </pre>
 
 
@@ -782,3 +783,4 @@ window.onload = () => {
 </script>
 </body>
 </html>
+
