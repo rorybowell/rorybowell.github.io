@@ -116,14 +116,16 @@
 	  color: #00ff00;
 	  text-decoration: underline;
 	}
-	#retroTitle {
+		#retroTitleDesktop,
+	#retroTitleMobile {
 	  font-family: monospace;
-	  font-size: 14px;         /* increase to 18–20px if you want it huge */
-	  color: #00ff00;          /* neon green */
-	  white-space: pre;        /* preserve spacing */
-	  text-align: center;      /* center the block on screen */
+	  font-size: 14px;
+	  color: #00ff00;
+	  white-space: pre;
+	  text-align: center;
 	  margin-bottom: 30px;
 	}
+
 
 	/* Hide your normal UI in retro mode */
 	body.retro #canvas,
@@ -149,6 +151,7 @@
 	  #themeSwitch {
 		display: none !important;
 	  }
+	}
 
 	@media (max-width: 600px) {
 	  #retroMode {
@@ -156,13 +159,13 @@
 	  }
 	}
 	
-	  body {
-		overflow: auto; /* allow scrolling in retro */
-	  }
+	body.retro {
+	  overflow-y: auto; /* allow body to scroll in retro mode */
+	}
 
-	  #retroMode {
-	  max-height: 100vh;   /* limit to viewport height */
-	  overflow-y: hidden;    /* scroll inside retro content */
+	#retroMode {
+	  max-height: none;    /* don’t constrain height */
+	  overflow-y: visible; /* no second scrollbar */
 	  padding: 40px;
 	}
 	
@@ -180,43 +183,50 @@
 	  margin: 0;
 	}
 
-	/* Retro theme for the toggle button when readability mode is active */
+	/* --- Retro Theme Switch Button --- */
 	body.retro #themeSwitch {
-	  position: fixed;           /* keep it visible while scrolling */
-	  top: 16px;
+	  position: fixed;
+	  bottom: 16px;
 	  right: 16px;
 	  z-index: 9999;
 
-	  background: #001a00;       /* terminal green-on-black vibes */
+	  background: #001100;
 	  color: #00ff00;
 	  border: 2px solid #00ff00;
 	  font-family: "Courier New", monospace;
+	  font-size: 14px;
 	  text-transform: uppercase;
 	  letter-spacing: 1px;
+
 	  padding: 8px 14px;
 	  border-radius: 4px;
-	  box-shadow: 0 0 10px #00ff00 inset, 0 0 8px #00ff00;
 	  cursor: pointer;
-	}
 
-	body.retro #themeSwitch::before {
-	  content: "> ";             /* prompt-style prefix */
-	}
-
-	body.retro #themeSwitch:hover {
-	  background: #002600;
-	}
-
-	/* Optional subtle pulse */
-	@keyframes crtPulse {
-	  0%,100% { box-shadow: 0 0 8px #00ff00; }
-	  50%     { box-shadow: 0 0 12px #00ff00; }
-	}
-	body.retro #themeSwitch {
+	  box-shadow: 0 0 8px #00ff00, inset 0 0 6px #00ff00;
 	  animation: crtPulse 2s infinite;
 	}
 
 
+	/* add a ">" like a terminal prompt */
+	body.retro #themeSwitch::before {
+	  content: "> ";
+	}
+
+	/* hover effect: brighter green */
+	body.retro #themeSwitch:hover {
+	  background: #002200;
+	  color: #b6ffb6;
+	  box-shadow: 0 0 12px #00ff00, inset 0 0 8px #00ff00;
+	}
+
+	/* subtle pulsing glow like a CRT */
+	@keyframes crtPulse {
+	  0%, 100% { box-shadow: 0 0 8px #00ff00, inset 0 0 6px #00ff00; }
+	  50%      { box-shadow: 0 0 14px #00ff00, inset 0 0 10px #00ff00; }
+	}
+
+	body.retro #themeSwitch {
+	  animation: crtPulse 2s infinite;
 	}
 
   </style>
@@ -238,7 +248,7 @@
     <div id="panelContent"></div>
   </div>
 <div id="retroMode">
-<pre id="retroTitle" class="desktop-only">
+<pre id="retroTitleDesktop" class="desktop-only">
 RRRRRRRRR   OOOOOOOOOO   RRRRRRRRR    YYYYY YYYYY      BBBBBBBBBB    OOOOOOOOOO    WW           WW   EEEEEEEEEEE   LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR    YYY   YYY       BBB     BBB  OOO      OOO   WW           WW   EE            LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR     YYY YYY        BBB     BBB  OOO      OOO   WW    WW     WW   EE            LLLLL         LLLLL
@@ -249,7 +259,7 @@ RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO
 </pre>
 
 <div id="retroTitleWrap">
-  <pre id="retroTitleRB">
+  <pre id="retroTitleMobile" class = "mobile-only">
 RRRRRRRRR   BBBBBBBBBB
 RRR    RRR  BBB     BBB
 RRR    RRR  BBB     BBB
@@ -260,7 +270,6 @@ RRR    RRR  BBBBBBBBBB
   </pre>
 </div>
 
-</pre>
   <div id="retroContent">
 	<h2>Education</h2>
     <p>Ph.D. in Electrical Engineering – Penn State</p>
