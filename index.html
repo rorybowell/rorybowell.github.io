@@ -102,6 +102,15 @@
 	  font-family: "Courier New", monospace;
 	  text-align: center;
 	}
+	
+	/* Default: show full, hide RB */
+	.desktop-only { display: block; }
+	.mobile-only { display: none; }
+
+	@media (max-width: 600px) {
+	  .desktop-only { display: none; }
+	  .mobile-only { display: block; }
+	}
 
 	body.retro a {
 	  color: #00ff00;
@@ -109,15 +118,11 @@
 	}
 	#retroTitle {
 	  font-family: monospace;
-	  font-size: 16px;
-	  white-space: pre;
-	  overflow-x: auto;   /* add horizontal scroll if still too wide */
-	}
-	
-	@media (max-width: 768px) {
-	  #retroTitle {
-	    font-size: 8px;  /* smaller font for mobile */
-	  }
+	  font-size: 14px;         /* increase to 18–20px if you want it huge */
+	  color: #4aff9e;          /* neon green */
+	  white-space: pre;        /* preserve spacing */
+	  text-align: center;      /* center the block on screen */
+	  margin-bottom: 30px;
 	}
 
 	/* Hide your normal UI in retro mode */
@@ -154,6 +159,7 @@
 	  overflow-y: auto;    /* scroll inside retro content */
 	  padding: 40px;
 	}
+
 	}
 
   </style>
@@ -175,17 +181,25 @@
     <div id="panelContent"></div>
   </div>
 <div id="retroMode">
-<pre id="retroTitle">
-<pre id="retroTitle">
+<pre id="retroTitle" class="desktop-only">
 RRRRRRRRR   OOOOOOOOOO   RRRRRRRRR    YYYYY YYYYY      BBBBBBBBBB    OOOOOOOOOO    WW           WW   EEEEEEEEEEE   LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR    YYY   YYY       BBB     BBB  OOO      OOO   WW           WW   EE            LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR     YYY YYY        BBB     BBB  OOO      OOO   WW    WW     WW   EE            LLLLL         LLLLL
 RRRRRRRRR   OOO      OOO RRRRRRRR        YYYYY         BBBBBBBBBB   OOO      OOO   WW   WWWW    WW   EEEEEEEEE     LLLLL         LLLLL
 RRR  RRR    OOO      OOO RRR  RRR         YYY          BBB     BBB  OOO      OOO   WW  WW  WW   WW   EE            LLLLL         LLLLL
 RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO   WW WW    WW  WW   EE            LLLLL         LLLLL
-   RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
+RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
 </pre>
 
+<pre id="retroTitleRB" class="mobile-only">
+RRRRRRRRR   BBBBBBBBBB
+RRR    RRR  BBB     BBB
+RRR    RRR  BBB     BBB
+RRRRRRRRR   BBBBBBBBBB
+RRR  RRR    BBB     BBB
+RRR   RRR   BBB     BBB
+RRR    RRR  BBBBBBBBBB
+</pre>
 
 </pre>
   <div id="retroContent">
@@ -787,5 +801,3 @@ window.onload = () => {
 </script>
 </body>
 </html>
-
-
