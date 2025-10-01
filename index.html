@@ -130,6 +130,27 @@
 	  display: block;
 	  padding: 40px;
 	}
+	/* On mobile, hide laser canvases + UI and only show retro */
+	@media (max-width: 768px) {
+	  #canvas,
+	  #bgCanvas,
+	  .instructions,
+	  .info-panel,
+	  .name-tag,
+	  #themeSwitch {
+		display: none !important;
+	  }
+
+	  body {
+		overflow: auto; /* allow scrolling in retro */
+	  }
+
+	  #retroMode {
+		display: block !important;
+		padding: 20px;
+	  }
+	}
+
   </style>
 </head>
 <body>
@@ -745,18 +766,18 @@ window.onload = () => {
 
   const themeBtn = document.getElementById("themeSwitch");
 
-  // Auto-enable retro mode on mobile
+  // Detect mobile
   const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
   if (isMobile) {
+    // Force retro mode only
     document.body.classList.add("retro");
-    // Optionally hide the toggle on mobile
     if (themeBtn) themeBtn.style.display = "none";
+  } else {
+    // Desktop: allow toggling
+    themeBtn?.addEventListener("click", () => {
+      document.body.classList.toggle("retro");
+    });
   }
-
-  // Desktop can still toggle manually
-  themeBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("retro");
-  });
 };
 </script>
 </body>
