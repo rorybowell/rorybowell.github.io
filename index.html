@@ -704,11 +704,17 @@ window.addEventListener('resize', () => {
 });
 
 /* --------------- init --------------- */
-drawHexagonBackground();
-render();
-document.getElementById("themeSwitch").addEventListener("click", () => {
-  document.body.classList.toggle("retro");
-});
+window.onload = () => {
+  resizeCanvases();
+  resetObjects();
+  drawHexagonBackground();
+  render();
+
+  document.getElementById("themeSwitch").addEventListener("click", () => {
+    document.body.classList.toggle("retro");
+  });
+};
 </script>
 </body>
 </html>
+
