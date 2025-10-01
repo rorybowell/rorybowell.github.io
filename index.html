@@ -230,6 +230,20 @@
 	    display: block;       /* show only on mobile */
 	  }
 	}
+	  #retroTitleWrapDesktop {
+	  display: flex;
+	  justify-content: center; /* centers the block horizontally */
+	  margin-bottom: 30px;
+	}
+	
+	#retroTitleWrapDesktop pre {
+	  display: inline-block;   /* shrink-wrap to content */
+	  text-align: left;        /* keep the ASCII left aligned */
+	  margin: 0;
+	  font-family: monospace;
+	  color: #00ff00;
+	  white-space: pre;
+	}
   </style>
 </head>
 <body>
@@ -249,15 +263,18 @@
     <div id="panelContent"></div>
   </div>
 <div id="retroMode">
-<pre id="retroTitleDesktop" class="desktop-only">
+<div id="retroTitleWrapDesktop">
+  <pre id="retroTitleDesktop" class="desktop-only">
 RRRRRRRRR   OOOOOOOOOO   RRRRRRRRR    YYYYY YYYYY      BBBBBBBBBB    OOOOOOOOOO    WW           WW   EEEEEEEEEEE   LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR    YYY   YYY       BBB     BBB  OOO      OOO   WW           WW   EE            LLLLL         LLLLL
 RRR    RRR  OOO      OOO RRR    RRR     YYY YYY        BBB     BBB  OOO      OOO   WW    WW     WW   EE            LLLLL         LLLLL
 RRRRRRRRR   OOO      OOO RRRRRRRR        YYYYY         BBBBBBBBBB   OOO      OOO   WW   WWWW    WW   EEEEEEEEE     LLLLL         LLLLL
 RRR  RRR    OOO      OOO RRR  RRR         YYY          BBB     BBB  OOO      OOO   WW  WW  WW   WW   EE            LLLLL         LLLLL
 RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO   WW WW    WW  WW   EE            LLLLL         LLLLL
-   RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL    
-</pre>
+RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
+  </pre>
+</div>
+
 
 <div id="retroTitleWrap">
   <pre id="retroTitleMobile" class = "mobile-only">
@@ -870,6 +887,7 @@ window.onload = () => {
 </script>
 </body>
 </html>
+
 
 
 
