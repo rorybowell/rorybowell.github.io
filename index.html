@@ -130,7 +130,27 @@
 	  display: block;
 	  padding: 40px;
 	}
-  </style>
+	@media (max-width: 600px) {
+	  .info-panel {
+		width: 90%;
+		padding: 20px;
+		font-size: 14px;
+	  }
+
+	  .name-tag {
+		font-size: 28px;
+		right: 20px;
+	  }
+
+	  #themeSwitch {
+		right: 20px;
+		bottom: 20px;
+		font-size: 12px;
+		padding: 6px 10px;
+	  }
+	}
+
+</style>
 </head>
 <body>
 <canvas id="bgCanvas"></canvas>
@@ -148,6 +168,7 @@
     <h2 id="panelTitle">Title</h2>
     <div id="panelContent"></div>
   </div>
+
 <div id="retroMode">
 <pre id="retroTitle">
 <pre id="retroTitle">
@@ -218,9 +239,17 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 function resizeCanvases() {
-  bgCanvas.width = canvas.width = window.innerWidth;
-  bgCanvas.height = canvas.height = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  bgCanvas.width = window.innerWidth * dpr;
+  bgCanvas.height = window.innerHeight * dpr;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+  bgCtx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(dpr, dpr);
+  bgCtx.scale(dpr, dpr);
 }
+
 resizeCanvases();
 
 /* --------------- background visuals --------------- */
@@ -659,6 +688,30 @@ canvas.addEventListener('click', e => {
     if (Math.sqrt(dx*dx + dy*dy) < 40 && det.active) openPanel(det.name);
   }
 });
+canvas.addEventListener('touchstart', e => {
+  const touch = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const mx = touch.clientX - rect.left;
+  const my = touch.clientY - rect.top;
+
+  // Mirror rotation
+  for (const mirror of mirrors) {
+    const dx = mx - mirror.x, dy = my - mirror.y;
+    if (Math.sqrt(dx*dx + dy*dy) < 60) {
+      mirror.angle = (mirror.angle + 45) % 360;
+      return;
+    }
+  }
+
+  // Detector click
+  for (const det of detectors) {
+    const dx = mx - det.x, dy = my - det.y;
+    if (Math.sqrt(dx*dx + dy*dy) < 45 && det.active) {
+      openPanel(det.name);
+      return;
+    }
+  }
+});
 function pointLineDistance(px, py, x1, y1, x2, y2) {
   const A = px - x1, B = py - y1, C = x2 - x1, D = y2 - y1;
   const dot = A * C + B * D;
@@ -717,4 +770,3 @@ window.onload = () => {
 </script>
 </body>
 </html>
-
