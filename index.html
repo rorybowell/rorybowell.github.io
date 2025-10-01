@@ -109,11 +109,15 @@
 	}
 	#retroTitle {
 	  font-family: monospace;
-	  font-size: 14px;         /* increase to 18–20px if you want it huge */
-	  color: #4aff9e;          /* neon green */
-	  white-space: pre;        /* preserve spacing */
-	  text-align: center;      /* center the block on screen */
-	  margin-bottom: 30px;
+	  font-size: 16px;
+	  white-space: pre;
+	  overflow-x: auto;   /* add horizontal scroll if still too wide */
+	}
+	
+	@media (max-width: 768px) {
+	  #retroTitle {
+	    font-size: 8px;  /* smaller font for mobile */
+	  }
 	}
 
 	/* Hide your normal UI in retro mode */
@@ -783,4 +787,5 @@ window.onload = () => {
 </script>
 </body>
 </html>
+
 
