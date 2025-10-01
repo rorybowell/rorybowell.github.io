@@ -153,43 +153,38 @@
 	  }
 	}
 
+	/* Add a little bottom padding on very small screens for comfy reading */
 	@media (max-width: 600px) {
-	  #retroMode {
-		padding-bottom: 80px; /* adjust as needed */
-	  }
-	}
-	
-	body.retro {
-	  overflow-y: auto; /* allow body to scroll in retro mode */
+	  #retroMode { padding-bottom: 80px; }
 	}
 
+	/* Retro scroll behavior */
+	body.retro { overflow-y: auto; }
 	#retroMode {
-	  max-height: none;    /* don’t constrain height */
-	  overflow-y: visible; /* no second scrollbar */
+	  max-height: none;
+	  overflow-y: visible;
 	  padding: 40px;
 	}
-	
-	/* Center the block, NOT the characters */
+
+	/* Center the RB block (don’t center each line’s characters) */
 	#retroTitleWrap {
 	  display: flex;
-	  justify-content: center;   /* centers the <pre> as a unit */
+	  justify-content: center;
 	  margin-bottom: 30px;
 	}
-
 	#retroTitleWrap pre {
-	  display: inline-block;     /* shrink to content width so centering works */
-	  white-space: pre;          /* preserve spacing */
-	  text-align: left;          /* keep ASCII lines left-aligned inside the block */
+	  display: inline-block;
+	  white-space: pre;
+	  text-align: left;
 	  margin: 0;
 	}
 
-	/* --- Retro Theme Switch Button --- */
+	/* Retro button styling (desktop only) */
 	body.retro #themeSwitch {
 	  position: fixed;
 	  bottom: 16px;
 	  right: 16px;
 	  z-index: 9999;
-
 	  background: #001100;
 	  color: #00ff00;
 	  border: 2px solid #00ff00;
@@ -197,36 +192,30 @@
 	  font-size: 14px;
 	  text-transform: uppercase;
 	  letter-spacing: 1px;
-
 	  padding: 8px 14px;
 	  border-radius: 4px;
 	  cursor: pointer;
-
 	  box-shadow: 0 0 8px #00ff00, inset 0 0 6px #00ff00;
 	  animation: crtPulse 2s infinite;
 	}
-
-
-	/* add a ">" like a terminal prompt */
-	body.retro #themeSwitch::before {
-	  content: "> ";
-	}
-
-	/* hover effect: brighter green */
+	body.retro #themeSwitch::before { content: "> "; }
 	body.retro #themeSwitch:hover {
 	  background: #002200;
 	  color: #b6ffb6;
 	  box-shadow: 0 0 12px #00ff00, inset 0 0 8px #00ff00;
 	}
-
-	/* subtle pulsing glow like a CRT */
 	@keyframes crtPulse {
-	  0%, 100% { box-shadow: 0 0 8px #00ff00, inset 0 0 6px #00ff00; }
-	  50%      { box-shadow: 0 0 14px #00ff00, inset 0 0 10px #00ff00; }
+	  0%,100% { box-shadow: 0 0 8px #00ff00, inset 0 0 6px #00ff00; }
+	  50%     { box-shadow: 0 0 14px #00ff00, inset 0 0 10px #00ff00; }
 	}
 
-	body.retro #themeSwitch {
-	  animation: crtPulse 2s infinite;
+	/* ===== Desktop vs Mobile ASCII toggle (put this AFTER everything above) ===== */
+	#retroMode .desktop-only { display: block !important; }
+	#retroMode .mobile-only  { display: none  !important; }
+
+	@media (max-width: 600px) {
+	  #retroMode .desktop-only { display: none  !important; }
+	  #retroMode .mobile-only  { display: block !important; }
 	}
 
   </style>
