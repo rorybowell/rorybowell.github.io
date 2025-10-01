@@ -163,17 +163,59 @@
 	  #retroMode {
 	  max-height: 100vh;   /* limit to viewport height */
 	  overflow-y: auto;    /* scroll inside retro content */
-	  padding: 200px;
+	  padding: 40px;
 	}
 	
+	/* Center the block, NOT the characters */
 	#retroTitleWrap {
 	  display: flex;
-	  justify-content: center;  /* centers the <pre> block itself */
+	  justify-content: center;   /* centers the <pre> as a unit */
 	  margin-bottom: 30px;
 	}
-	#retroTitleRB {
-	  text-align: left;         /* keeps ASCII aligned properly */
+
+	#retroTitleWrap pre {
+	  display: inline-block;     /* shrink to content width so centering works */
+	  white-space: pre;          /* preserve spacing */
+	  text-align: left;          /* keep ASCII lines left-aligned inside the block */
+	  margin: 0;
 	}
+
+	/* Retro theme for the toggle button when readability mode is active */
+	body.retro #themeSwitch {
+	  position: fixed;           /* keep it visible while scrolling */
+	  top: 16px;
+	  right: 16px;
+	  z-index: 9999;
+
+	  background: #001a00;       /* terminal green-on-black vibes */
+	  color: #00ff00;
+	  border: 2px solid #00ff00;
+	  font-family: "Courier New", monospace;
+	  text-transform: uppercase;
+	  letter-spacing: 1px;
+	  padding: 8px 14px;
+	  border-radius: 4px;
+	  box-shadow: 0 0 10px #00ff00 inset, 0 0 8px #00ff00;
+	  cursor: pointer;
+	}
+
+	body.retro #themeSwitch::before {
+	  content: "> ";             /* prompt-style prefix */
+	}
+
+	body.retro #themeSwitch:hover {
+	  background: #002600;
+	}
+
+	/* Optional subtle pulse */
+	@keyframes crtPulse {
+	  0%,100% { box-shadow: 0 0 8px #00ff00; }
+	  50%     { box-shadow: 0 0 12px #00ff00; }
+	}
+	body.retro #themeSwitch {
+	  animation: crtPulse 2s infinite;
+	}
+
 
 	}
 
@@ -206,7 +248,8 @@ RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO
    RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
 </pre>
 
-<pre id="retroTitleRB" class="mobile-only">
+<div id="retroTitleWrap">
+  <pre id="retroTitleRB">
 RRRRRRRRR   BBBBBBBBBB
 RRR    RRR  BBB     BBB
 RRR    RRR  BBB     BBB
@@ -214,7 +257,8 @@ RRRRRRRRR   BBBBBBBBBB
 RRR  RRR    BBB     BBB
 RRR   RRR   BBB     BBB
 RRR    RRR  BBBBBBBBBB
-</pre>
+  </pre>
+</div>
 
 </pre>
   <div id="retroContent">
@@ -816,4 +860,3 @@ window.onload = () => {
 </script>
 </body>
 </html>
-
