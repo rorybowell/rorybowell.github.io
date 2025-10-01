@@ -245,6 +245,7 @@
 	  color: #00ff00;
 	  white-space: pre;
 	}
+	  
   </style>
 </head>
 <body>
@@ -335,6 +336,15 @@ RRR    RRR  BBBBBBBBBB
     <h2>Contact</h2>
     <p>LinkedIn: linkedin.com/in/rorybowell</p>
   </div>
+<div id="compatWarning" style="display:none;
+     position:fixed;top:20px;right:20px;
+     background:#ff4a4a;color:#fff;
+     padding:10px 15px;border-radius:6px;
+     font-size:14px;z-index:2000;max-width:250px;">
+  ⚠️ Your browser has limited graphics support.<br>
+  Switching to readability mode.
+</div>
+
 <div class="mobile-footer">More fun on desktop!</div>
 </div>
 <script>
@@ -885,9 +895,42 @@ window.onload = () => {
     });
   }
 };
+function isWebGLAvailable() {
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
+function testCanvasSupport() {
+  const testCanvas = document.createElement("canvas");
+  const ctx = testCanvas.getContext("2d");
+  if (!ctx) return false;
+  ctx.save();
+  ctx.translate(50, 50);
+  ctx.rotate(Math.PI / 4);
+  ctx.fillRect(-10, -10, 20, 20);
+  ctx.restore();
+  return testCanvas.toDataURL().length > 10;
+}
+
+window.addEventListener("load", () => {
+  if (!isWebGLAvailable() || !testCanvasSupport()) {
+    // show warning
+    document.getElementById("compatWarning").style.display = "block";
+    // switch to retro/readability mode
+    document.body.classList.add("retro");
+  }
+});	
 </script>
 </body>
 </html>
+
 
 
 
