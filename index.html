@@ -102,10 +102,11 @@
 	  font-family: "Courier New", monospace;
 	  text-align: center;
 	}
+	#retroMode { display: none; }
 
 	body.retro a {
 	  color: #00ff00;
-	  text-decoration: underline;just
+	  text-decoration: underline;
 	}
 	#retroTitle {
 	  font-family: monospace;
@@ -130,30 +131,13 @@
 	  display: block;
 	  padding: 40px;
 	}
-	/* hide close button normally */
-	.info-panel .close-btn {
-	  display: none;
-	}
-
-	/* show it on mobile */
-	@media (max-width: 600px) {
-	  .info-panel .close-btn {
-		display: flex; /* makes it appear */
-	  }
-	}
+	
 	@media (max-width: 600px) {
 	  .info-panel {
 		width: 90%;
 		padding: 20px;
 		font-size: 14px;
 	  }
-	@media (max-width: 600px) {
-	  .name-tag {
-		top: 10px;
-		right: 10px;
-		font-size: 28px; /* shrink for mobile */
-	  }
-	}
 
 	  .name-tag {
 		font-size: 28px;
@@ -785,6 +769,16 @@ window.onload = () => {
     document.body.classList.toggle("retro");
   });
 };
+function applyMobileReadability() {
+  const isMobile = window.matchMedia('(max-width: 600px)').matches;
+  document.body.classList.toggle('retro', isMobile);
+  // Optional: update the button label so it makes sense for the current mode
+  const btn = document.getElementById('themeSwitch');
+  if (btn) btn.textContent = isMobile ? 'Switch to Laser Mode' : 'Toggle Readability Mode';
+}
+
+window.addEventListener('load', applyMobileReadability);
+window.addEventListener('resize', applyMobileReadability);
 </script>
 </body>
 </html>
