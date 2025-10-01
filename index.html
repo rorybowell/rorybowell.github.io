@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laser Puzzle Portfolio</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0a0e27;
+      overflow: hidden;
+      color: #fff;
+    }
+    #bgCanvas { position: absolute; top: 0; left: 0; z-index: 0; }
+    #canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+    .info-panel {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 450px; max-height: 500px;
+      background: rgba(10, 14, 39, 0.98);
+      border: 2px solid #4a9eff;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 0 50px rgba(74, 158, 255, 0.6);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .info-panel.visible { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .info-panel h2 {
+      color: #4aff9e;
+      margin-bottom: 20px;
+      font-size: 32px;
+      text-shadow: 0 0 10px rgba(74, 255, 158, 0.5);
+    }
+    .info-panel p { line-height: 1.8; color: #ccc; margin-bottom: 15px; font-size: 15px; }
+    .close-btn {
+      position: absolute; top: 20px; right: 20px;
+      width: 35px; height: 35px;
+      background: rgba(255, 74, 74, 0.2);
+      border: 2px solid #ff4a4a;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #ff4a4a; font-size: 22px;
+      transition: all 0.3s;
+    }
+    .close-btn:hover { background: rgba(255, 74, 74, 0.5); transform: rotate(90deg); }
+    .instructions {
+      position: absolute; top: 20px; left: 20px;
+      background: rgba(10, 14, 39, 0.9);
+      padding: 20px 25px;
+      border-radius: 10px;
+      border: 1px solid rgba(74, 158, 255, 0.4);
+      max-width: 280px;
+      z-index: 100;
+    }
+    .instructions h3 { color: #4a9eff; margin-bottom: 10px; font-size: 18px; }
+    .instructions p { font-size: 14px; color: #aaa; line-height: 1.5; }
+	a {
+	  color: #4aff9e;          /* a bright green to match your theme */
+	  text-decoration: none;   /* removes underline */
+	}
+
+	a:hover {
+	  color: #ffc84a;          /* yellow on hover */
+	  text-decoration: underline;
+	}
+	#themeSwitch {
+	  position: absolute;
+	  bottom: 10px;
+	  right: 40px;         /* place just below your name */
+	  background: #1a1f3a; /* dark background */
+	  border: 2px solid #4a9eff;
+	  color: #4a9eff;
+	  padding: 8px 14px;
+	  border-radius: 8px;
+	  cursor: pointer;
+	  font-size: 14px;
+	  z-index: 200;        /* keep above canvases */
+	}
+	#themeSwitch:hover {
+	  background: #4a9eff;
+	  color: #0a0e27;
+	}
+
+	.name-tag {
+	  position: absolute;
+	  top: 40px;
+	  right: 40px;
+	  font-size: 50px;
+	  font-weight: bold;
+	  color: #4aff9e; /* matches your theme green */
+	  text-shadow: 0 0 8px rgba(74, 255, 158, 0.6);
+	  z-index: 200; /* keep above canvases */
+	}
+	body.retro {
+	  background: #000;
+	  color: #00ff00;
+	  font-family: "Courier New", monospace;
+	  text-align: center;
+	}
+
+	body.retro a {
+	  color: #00ff00;
+	  text-decoration: underline;just
+	}
+	#retroTitle {
+	  font-family: monospace;
+	  font-size: 14px;         /* increase to 18–20px if you want it huge */
+	  color: #4aff9e;          /* neon green */
+	  white-space: pre;        /* preserve spacing */
+	  text-align: center;      /* center the block on screen */
+	  margin-bottom: 30px;
+	}
+
+	/* Hide your normal UI in retro mode */
+	body.retro #canvas,
+	body.retro #bgCanvas,
+	body.retro .instructions,
+	body.retro .info-panel,
+	body.retro .name-tag {
+	  display: none;
+	}
+
+	/* Show retro container */
+	body.retro #retroMode {
+	  display: block;
+	  padding: 40px;
+	}
+  </style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<canvas id="canvas"></canvas>
+
+<div class="name-tag">Rory Bowell</div>
+<button id="themeSwitch">Toggle Readability Mode</button>
+
+<div class="instructions" id="infoBox">
+  <h3> Laser Puzzle</h3>
+  <p>Click mirrors to rotate them 45° and direct the laser beam to different detectors.  </p>
+</div>
+  <div id="infoPanel" class="info-panel">
+    <div class="close-btn" onclick="closePanel()">×</div>
+    <h2 id="panelTitle">Title</h2>
+    <div id="panelContent"></div>
+  </div>
+<div id="retroMode">
+<pre id="retroTitle">
+<pre id="retroTitle">
+RRRRRRRRR   OOOOOOOOOO   RRRRRRRRR    YYYYY   YYYY     BBBBBBBBBB    OOOOOOOOOO    WW           WW   EEEEEEEEEEE   LLLLL         LLLLL
+RRR    RRR  OOO      OOO RRR    RRR    YYY   YYY       BBB     BBB  OOO      OOO   WW           WW   EE            LLLLL         LLLLL
+RRR    RRR  OOO      OOO RRR    RRR     YYY YYY        BBB     BBB  OOO      OOO   WW    WW     WW   EE            LLLLL         LLLLL
+RRRRRRRRR   OOO      OOO RRRRRRRR        YYYYY         BBBBBBBBBB   OOO      OOO   WW   WWWW    WW   EEEEEEEEE     LLLLL         LLLLL
+RRR  RRR    OOO      OOO RRR  RRR         YYY          BBB     BBB  OOO      OOO   WW  WW  WW   WW   EE            LLLLL         LLLLL
+RRR   RRR   OOO      OOO RRR   RRR        YYY          BBB     BBB  OOO      OOO   WW WW    WW  WW   EE            LLLLL         LLLLL
+      RRR    RRR   OOOOOOOOOO  RRR    RRR       YYY          BBBBBBBBBB    OOOOOOOOOO    WWWW      WWWW    EEEEEEEEEEE   LLLLLLLLLLL   LLLLLLLLLLL
+</pre>
+
+
+</pre>
+  <div id="retroContent">
+	<h2>Education</h2>
+    <p>Ph.D. in Electrical Engineering – Penn State</p>
+    <p>M.S. in Electrical Engineering – Penn State</p>
+    <p>B.S. in Electrical Engineering – Kansas State</p>
+
+    <h2>Experience</h2>
+    <p>Programmable Systems Lead – Quantum Company (2024–2025)</p>
+    <p>Graduate Research Assistant – Penn State University (2019–2023)</p>
+    <p>Student Trainee – NSWC Crane (Summers, 2019–2023)</p>
+
+        <h2>Publications</h2>
+    <p>
+      <strong>Electric field correlations in quantum radar and the quantum advantage</strong><br>
+      <em>Radar Sensor Technology XXIV</em>, 2020<br>
+      <a href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11408/114080S/Electric-field-correlations-in-quantum-radar-and-the-quantum-advantage/10.1117/12.2562749.short" target="_blank">Link</a>
+    </p>
+    <p>
+      <strong>Tripartite correlation performance for use in quantum radar systems</strong><br>
+      <em>Radar Sensor Technology XXV</em>, 2021<br>
+      <a href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11742/117420I/Tripartite-correlation-performance-for-use-in-quantum-radar-systems/10.1117/12.2588308.short" target="_blank">Link</a>
+    </p>
+    <p>
+      <strong>Remote sensing performance enhancement due to quantum + classical cooperative sensor</strong><br>
+      <em>Radar Sensor Technology XXIV</em>, 2020<br>
+      <a href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11408/114080R/Remote-sensing-performance-enhancement-due-to-quantum--classical-cooperative/10.1117/12.2562739.short" target="_blank">Link</a>
+    </p>
+    <p>
+      <strong>Comparison of correlation performance for various measurement schemes in quantum bipartite radar and communication systems</strong><br>
+      <em>Progress in Electromagnetics Research</em>, 2022<br>
+      <a href="https://www.jpier.org/ac_api/preview.php?t=ab&id=22022506" target="_blank">Link</a>
+    </p>
+    <p>
+      <strong>Tripartite Correlations in Quantum Radar and Communication Systems</strong><br>
+      <em>Progress In Electromagnetics Research M</em>, 2023<br>
+      <a href="https://www.jpier.org/PIERM/pier.php?paper=23011003" target="_blank">Link</a>
+    </p>
+    <p>
+      <strong>Evaluation of Quantum Correlations for Use in Quantum Radar and Quantum Communication Systems</strong><br>
+      <em>Ph.D. Dissertation, Penn State</em>, 2023<br>
+      <a href="https://etda.libraries.psu.edu/files/final_submissions/28417" target="_blank">Dissertation Link</a>
+    </p>
+	
+    <h2>Contact</h2>
+    <p>LinkedIn: linkedin.com/in/rorybowell</p>
+  </div>
+
+</div>
+<script>
+/* --------------- canvas setup --------------- */
+const bgCanvas = document.getElementById('bgCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvases() {
+  bgCanvas.width = canvas.width = window.innerWidth;
+  bgCanvas.height = canvas.height = window.innerHeight;
+}
+resizeCanvases();
+
+/* --------------- background visuals --------------- */
+function drawHexagonBackground() {
+  const hexSize = 60;
+  const hexHeight = hexSize * Math.sqrt(3);
+  const hexWidth = hexSize * 2;
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  const gradient = bgCtx.createRadialGradient(
+    bgCanvas.width / 2, bgCanvas.height / 2, 0,
+    bgCanvas.width / 2, bgCanvas.height / 2, bgCanvas.width / 2
+  );
+  gradient.addColorStop(0, '#1a1f3a');
+  gradient.addColorStop(1, '#0a0e27');
+  bgCtx.fillStyle = gradient;
+  bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+  for (let row = -1; row < bgCanvas.height / hexHeight + 2; row++) {
+    for (let col = -1; col < bgCanvas.width / (hexWidth * 0.75) + 2; col++) {
+      const x = col * hexWidth * 0.75;
+      const y = row * hexHeight + (col % 2) * hexHeight / 2;
+      drawHexagon(bgCtx, x, y, hexSize, 'rgba(74, 158, 255, 0.08)');
+    }
+  }
+}
+function drawHexagon(context, x, y, size, color) {
+  context.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i;
+    const hx = x + size * Math.cos(angle);
+    const hy = y + size * Math.sin(angle);
+    if (i === 0) context.moveTo(hx, hy);
+    else context.lineTo(hx, hy);
+  }
+  context.closePath();
+  context.strokeStyle = color;
+  context.lineWidth = 1;
+  context.stroke();
+}
+
+/* --------------- Retro Mode --------------- */
+
+
+/* --------------- info content --------------- */
+const infoContent = {
+  'Experience': {
+    title: 'Experience',
+    content: `
+      <p><strong>Programmable Systems Lead</strong><br>
+      Quantum Company | 2024 – 2025</p>
+	  <p><strong>Graduate Research Assistant</strong><br>
+      Penn State University | 2019 – 2023</p>
+	  <p><strong>Student Trainee</strong><br>
+      NSWC - Crane | Summers, 2019-2023</p>
+    `
+  },
+'Publications': {
+  title: 'Publications',
+  content: `
+    <ul style="list-style:none; padding:0; margin:0;">
+      <li>
+        <a href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11408/114080S/Electric-field-correlations-in-quantum-radar-and-the-quantum-advantage/10.1117/12.2562749.short" target="_blank">
+          Electric field correlations in quantum radar and the quantum advantage
+        </a><br>
+        <em>Radar Sensor Technology XXIV</em>, 2020
+      </li>
+      <li>
+        <a href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11742/117420I/Tripartite-correlation-performance-for-use-in-quantum-radar-systems/10.1117/12.2588308.short" target="_blank">
+          Tripartite correlation performance for use in quantum radar systems
+        </a><br>
+        <em>Radar Sensor Technology XXV</em>, 2021
+      </li>
+      <li>
+        <a href="https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11408/114080R/Remote-sensing-performance-enhancement-due-to-quantum--classical-cooperative/10.1117/12.2562739.short" target="_blank">
+          Remote sensing performance enhancement due to quantum + classical cooperative sensor
+        </a><br>
+        <em>Radar Sensor Technology XXIV</em>, 2020
+      </li>
+      <li>
+        <a href="https://www.jpier.org/ac_api/preview.php?t=ab&id=22022506" target="_blank">
+          Comparison of correlation performance for various measurement schemes in quantum bipartite radar and communication systems
+        </a><br>
+        <em>Progress in Electromagnetics Research</em>, 2022
+      </li>
+      <li>
+        <a href="https://www.jpier.org/PIERM/pier.php?paper=23011003" target="_blank">
+          Tripartite Correlations in Quantum Radar and Communication Systems
+        </a><br>
+        <em>Progress In Electromagnetics Research M</em>, 2023
+      </li>
+      <li>
+        <a href="https://etda.libraries.psu.edu/files/final_submissions/28417" target="_blank">
+          Evaluation of Quantum Correlations for Use in Quantum Radar and Quantum Communication Systems
+        </a><br>
+        <em>Ph.D. Dissertation, Penn State</em>, 2023
+      </li>
+    </ul>
+  `
+},
+
+  'Contact': {
+    title: 'Contact',
+    content: `
+      <p><a href="https://linkedin.com/in/rorybowell" target="_blank">Message me on LinkedIn</a></p>
+    `
+  },
+  'Education': {
+    title: 'Education',
+    content: `
+      <ul style="list-style:none; padding:0; margin:0;">
+        <li><strong>Ph.D. in Electrical Engineering</strong><br> Penn State University</li>
+        <li><strong>M.S. in Electrical Engineering</strong><br> Penn State University</li>
+        <li><strong>B.S. in Electrical Engineering</strong><br> Kansas State University</li>
+      </ul>
+    `
+  }
+};
+
+
+
+/* --------------- game objects --------------- */
+const laserSource = { x: canvas.width *.05, y: canvas.height * 0.85, angle: 0 }; // angle in degrees (0 = right)
+function degToRad(a) { return a * Math.PI / 180; }
+
+const mirrors = [
+  { x: canvas.width * 0.25, y: canvas.height * 0.85, angle: 45 },
+  { x: canvas.width * 0.25, y: canvas.height * 0.5, angle: 135 },
+  { x: canvas.width * 0.85, y: canvas.height * 0.85, angle: 45 },
+  { x: canvas.width * 0.65, y: canvas.height * 0.15, angle: 135 },
+  { x: canvas.width * 0.65, y: canvas.height * 0.5, angle: 45 },
+  { x: canvas.width * 0.65, y: canvas.height * 0.85, angle: 90 }
+];
+
+const detectors = [
+  { x: canvas.width * 0.5, y: canvas.height * 0.15, name: 'Contact', active: false },
+  { x: canvas.width * 0.85, y: canvas.height * 0.5, name: 'Experience', active: false },
+  { x: canvas.width * 0.5, y: canvas.height * 0.85, name: 'Publications', active: false },
+  { x: canvas.width * 0.15, y: canvas.height * 0.5, name: 'Education', active: false }
+];
+
+
+/* --------------- draw helpers --------------- */
+function drawLaser(from, to) {
+  const gradient = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
+  gradient.addColorStop(0, 'rgba(255, 74, 74, 1)');
+  gradient.addColorStop(1, 'rgba(255, 74, 74, 0.6)');
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = 4;
+  ctx.shadowColor = '#ff4a4a';
+  ctx.shadowBlur = 20;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(to.x, to.y);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+function drawHitPoint(x, y) {
+  ctx.fillStyle = 'rgba(255, 200, 74, 0.9)';
+  ctx.shadowColor = '#ffc84a';
+  ctx.shadowBlur = 15;
+  ctx.beginPath();
+  ctx.arc(x, y, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+function drawMirror(mirror, isHovered = false) {
+  ctx.save();
+  ctx.translate(mirror.x, mirror.y);
+  ctx.rotate((mirror.angle * Math.PI) / 180);
+  const gradient = ctx.createLinearGradient(-50, 0, 50, 0);
+  gradient.addColorStop(0, '#4a9eff');
+  gradient.addColorStop(0.5, '#a78bfa');
+  gradient.addColorStop(1, '#4a9eff');
+  ctx.fillStyle = gradient;
+  ctx.shadowColor = isHovered ? '#7b68ee' : '#4a9eff';
+  ctx.shadowBlur = isHovered ? 35 : 25;
+  ctx.fillRect(-50, -8, 100, 16);
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  ctx.fillRect(-50, -8, 100, 16);
+  ctx.restore();
+}
+function drawDetector(detector) {
+  ctx.save();
+  ctx.translate(detector.x, detector.y);
+  const size = 40;
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i;
+    const x = size * Math.cos(angle);
+    const y = size * Math.sin(angle);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  if (detector.active) {
+    ctx.fillStyle = 'rgba(74, 255, 158, 0.4)';
+    ctx.strokeStyle = '#4aff9e';
+    ctx.shadowColor = '#4aff9e';
+    ctx.shadowBlur = 35;
+    ctx.lineWidth = 3;
+  } else {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+  }
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = detector.active ? '#4aff9e' : '#fff';
+  ctx.font = 'bold 12px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(detector.name, 0, 0);
+  ctx.restore();
+}
+function drawLaserSource() {
+  ctx.save();
+  const gradient = ctx.createRadialGradient(
+    laserSource.x, laserSource.y, 0,
+    laserSource.x, laserSource.y, 25
+  );
+  gradient.addColorStop(0, '#ff6b6b');
+  gradient.addColorStop(0.6, '#ff4a4a');
+  gradient.addColorStop(1, '#ff1a1a');
+  ctx.shadowColor = '#ff4a4a';
+  ctx.shadowBlur = 40;
+  ctx.beginPath();
+  ctx.arc(laserSource.x, laserSource.y, 25, 0, Math.PI * 2);
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  ctx.restore();
+}
+
+function updateInfoBox(detectorName) {
+  const info = infoContent[detectorName];
+  const box = document.getElementById('infoBox');
+  box.innerHTML = `<h3>${info.title}</h3>${info.content}`;
+}
+
+
+/* --------------- geometry helpers --------------- */
+/**
+ * segmentsIntersect: robust segment-segment intersection
+ * returns {x,y,t,u} where t is fraction along segment 1 (x1->x2)
+ * and u is fraction along segment 2 (x3->x4); null if no intersection.
+ */
+function segmentsIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+  const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+  if (Math.abs(denom) < 1e-8) return null;
+  const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+  const u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denom;
+  // Note: u formula sign choice ensures consistent orientation
+  if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+    return { x: x1 + t * (x2 - x1), y: y1 + t * (y2 - y1), t, u };
+  }
+  return null;
+}
+
+/**
+ * lineCircleIntersection: for segment (x1,y1)->(x2,y2) and circle (cx,cy,r)
+ * returns earliest t in [0,1] if intersection else null, and point
+ */
+function lineCircleIntersection(x1, y1, x2, y2, cx, cy, r) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const fx = x1 - cx, fy = y1 - cy;
+  const a = dx*dx + dy*dy;
+  const b = 2 * (fx*dx + fy*dy);
+  const c = (fx*fx + fy*fy) - r*r;
+  let disc = b*b - 4*a*c;
+  if (disc < 0) return null;
+  disc = Math.sqrt(disc);
+  const t1 = (-b - disc) / (2*a);
+  const t2 = (-b + disc) / (2*a);
+  const candidates = [];
+  if (t1 >= 0 && t1 <= 1) candidates.push(t1);
+  if (t2 >= 0 && t2 <= 1) candidates.push(t2);
+  if (candidates.length === 0) return null;
+  const t = Math.min(...candidates);
+  return { t, x: x1 + dx * t, y: y1 + dy * t };
+}
+
+/* --------------- reflection helper --------------- */
+function reflectVector(dx, dy, mirrorAngleDeg) {
+  const rad = mirrorAngleDeg * Math.PI / 180;
+  // tangent along mirror
+  const tx = Math.cos(rad), ty = Math.sin(rad);
+  // normal (perpendicular)
+  const nx = -ty, ny = tx;
+  // reflect d across normal: r = d - 2(d·n) n
+  const dot = dx * nx + dy * ny;
+  let rx = dx - 2 * dot * nx;
+  let ry = dy - 2 * dot * ny;
+  const len = Math.hypot(rx, ry) || 1;
+  rx /= len; ry /= len;
+  return { dx: rx, dy: ry };
+}
+
+/* --------------- laser trace (recursive / iterative) --------------- */
+/**
+ * traceLaser(startX, startY, dirX, dirY)
+ * draws beam segments, handles mirrors and detectors.
+ */
+function traceLaser(startX, startY, dirX, dirY) {
+  // clear detectors active flag first
+  detectors.forEach(d => d.active = false);
+
+  let x = startX, y = startY;
+  let dx = dirX, dy = dirY;
+
+  const MAX_BOUNCES = 20;
+  const FAR = 5000;
+  const EPS = 0.0001;
+
+  const debugLines = [];
+
+  for (let bounce = 0; bounce < MAX_BOUNCES; bounce++) {
+    // ray segment
+    const rx2 = x + dx * FAR;
+    const ry2 = y + dy * FAR;
+
+    // 1) find closest detector intersection (if any)
+    let closest = null; // { type:'detector'|'mirror', t, x,y, mirrorRef or detRef }
+    for (const det of detectors) {
+      const ci = lineCircleIntersection(x, y, rx2, ry2, det.x, det.y, 40);
+      if (ci) {
+        const dist2 = (ci.x - x) ** 2 + (ci.y - y) ** 2;
+        if (!closest || dist2 < closest.dist2) {
+          closest = { type: 'detector', x: ci.x, y: ci.y, dist2, det };
+        }
+      }
+    }
+
+    // 2) find closest mirror intersection
+    for (const mirror of mirrors) {
+      const rad = mirror.angle * Math.PI / 180;
+      const len = 50;
+      const mx1 = mirror.x - Math.cos(rad) * len;
+      const my1 = mirror.y - Math.sin(rad) * len;
+      const mx2 = mirror.x + Math.cos(rad) * len;
+      const my2 = mirror.y + Math.sin(rad) * len;
+
+      const si = segmentsIntersect(x, y, rx2, ry2, mx1, my1, mx2, my2);
+      if (si) {
+        const dist2 = (si.x - x) ** 2 + (si.y - y) ** 2;
+        if (!closest || dist2 < closest.dist2) {
+          closest = { type: 'mirror', x: si.x, y: si.y, dist2, mirror, mx1, my1, mx2, my2 };
+        }
+      }
+    }
+
+    // 3) if nothing hit -> draw ray to far and stop
+    if (!closest) {
+	  drawLaser({ x, y }, { x: rx2, y: ry2 });
+	  // Reset infoBox back to default instructions
+	  const box = document.getElementById('infoBox');
+	  box.innerHTML = `
+		<h3> Laser Puzzle</h3>
+		<p>Click mirrors to rotate them 45° and direct the laser beam to different detectors.</p>
+	  `;
+	  break;
+	}
+
+    // draw to the hit point
+    drawLaser({ x, y }, { x: closest.x, y: closest.y });
+    drawHitPoint(closest.x, closest.y);
+
+    if (closest.type === 'detector') {
+	  closest.det.active = true;
+	  updateInfoBox(closest.det.name);
+	  break;
+	}
+
+
+    // it's a mirror: reflect and continue
+    const newDir = reflectVector(dx, dy, closest.mirror.angle);
+
+    // move start point slightly along the new direction to avoid self-intersection
+    x = closest.x + newDir.dx * EPS;
+    y = closest.y + newDir.dy * EPS;
+    dx = newDir.dx;
+    dy = newDir.dy;
+
+    debugLines.push(`Bounce ${bounce + 1} at mirror (${Math.round(closest.mirror.x)},${Math.round(closest.mirror.y)})`);
+  }
+}
+
+/* --------------- render loop --------------- */
+let hoveredMirror = null;
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // compute initial laser direction from laserSource.angle
+  const rad = degToRad(laserSource.angle || 0);
+  const dx = Math.cos(rad), dy = Math.sin(rad);
+
+  traceLaser(laserSource.x, laserSource.y, dx, dy);
+  drawLaserSource();
+  mirrors.forEach(m => drawMirror(m, m === hoveredMirror));
+  detectors.forEach(drawDetector);
+  requestAnimationFrame(render);
+}
+
+/* --------------- interactions --------------- */
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  hoveredMirror = null;
+  for (const mirror of mirrors) {
+    const rad = mirror.angle * Math.PI / 180;
+    const len = 50;
+    const mx1 = mirror.x - Math.cos(rad) * len;
+    const my1 = mirror.y - Math.sin(rad) * len;
+    const mx2 = mirror.x + Math.cos(rad) * len;
+    const my2 = mirror.y + Math.sin(rad) * len;
+    const dist = pointLineDistance(mx, my, mx1, my1, mx2, my2);
+    if (dist < 10) { hoveredMirror = mirror; canvas.style.cursor = 'pointer'; return; }
+  }
+  // check detectors hover (only if active)
+  for (const det of detectors) {
+    const dxx = mx - det.x, dyy = my - det.y;
+    if (Math.sqrt(dxx*dxx + dyy*dyy) < 40 && det.active) { canvas.style.cursor = 'pointer'; return; }
+  }
+  canvas.style.cursor = 'default';
+});
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  if (hoveredMirror) {
+    // rotate mirror 45 degrees (keeping 0..360)
+    hoveredMirror.angle = (hoveredMirror.angle + 45) % 360;
+    return;
+  }
+  for (const det of detectors) {
+    const dx = mx - det.x, dy = my - det.y;
+    if (Math.sqrt(dx*dx + dy*dy) < 40 && det.active) openPanel(det.name);
+  }
+});
+function pointLineDistance(px, py, x1, y1, x2, y2) {
+  const A = px - x1, B = py - y1, C = x2 - x1, D = y2 - y1;
+  const dot = A * C + B * D;
+  const len_sq = C * C + D * D;
+  let param = -1; if (len_sq !== 0) param = dot / len_sq;
+  let xx, yy;
+  if (param < 0) { xx = x1; yy = y1; }
+  else if (param > 1) { xx = x2; yy = y2; }
+  else { xx = x1 + param * C; yy = y1 + param * D; }
+  const dx = px - xx, dy = py - yy;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+/* --------------- panel --------------- */
+function openPanel(name) {
+  const panel = document.getElementById('infoPanel');
+  document.getElementById('panelTitle').innerText = infoContent[name].title;
+  document.getElementById('panelContent').innerHTML = infoContent[name].content;
+  panel.classList.add('visible');
+}
+function closePanel() { document.getElementById('infoPanel').classList.remove('visible'); }
+
+/* --------------- resize handling --------------- */
+function resetObjects() {
+  // recompute mirror and detector positions
+  detectors[0].x = canvas.width * 0.5;  detectors[0].y = canvas.height * 0.15;
+  detectors[1].x = canvas.width * 0.85; detectors[1].y = canvas.height * 0.5;
+  detectors[2].x = canvas.width * 0.5;  detectors[2].y = canvas.height * 0.85;
+  detectors[3].x = canvas.width * 0.15; detectors[3].y = canvas.height * 0.5;
+
+  mirrors[0].x = canvas.width * 0.25; mirrors[0].y = canvas.height * 0.85;
+  mirrors[1].x = canvas.width * 0.25; mirrors[1].y = canvas.height * 0.5;
+  mirrors[2].x = canvas.width * 0.85; mirrors[2].y = canvas.height * 0.85;
+  mirrors[3].x = canvas.width * 0.65; mirrors[3].y = canvas.height * 0.15;
+  mirrors[4].x = canvas.width * 0.65; mirrors[4].y = canvas.height * 0.5;
+  mirrors[5].x = canvas.width * 0.65; mirrors[5].y = canvas.height * 0.85;
+}
+
+window.addEventListener('resize', () => {
+  resizeCanvases();
+  resetObjects();
+  drawHexagonBackground();
+});
+
+/* --------------- init --------------- */
+drawHexagonBackground();
+render();
+document.getElementById("themeSwitch").addEventListener("click", () => {
+  document.body.classList.toggle("retro");
+});
+</script>
+</body>
+</html>
