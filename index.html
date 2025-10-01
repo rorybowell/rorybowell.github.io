@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Laser Puzzle Portfolio</title>
+  <title>Rory Bowell</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -217,9 +217,22 @@
 	  #retroMode .desktop-only { display: none  !important; }
 	  #retroMode .mobile-only  { display: block !important; }
 	}
-
+	.mobile-footer {
+	  display: none;          /* hidden by default */
+	  text-align: center;
+	  font-size: 14px;
+	  color: #aaa;
+	  margin: 30px 0;         /* space from content */
+	}
+	
+	@media (max-width: 768px) {
+	  .mobile-footer {
+	    display: block;       /* show only on mobile */
+	  }
+	}
   </style>
 </head>
+<div class="mobile-footer">More fun on desktop!</div>
 <body>
 <canvas id="bgCanvas"></canvas>
 <canvas id="canvas"></canvas>
@@ -858,4 +871,5 @@ window.onload = () => {
 </script>
 </body>
 </html>
+
 
